@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#e8590c">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Makan Apa Hari Ini?</title>
+<style>
+:root{--bg:#fff8f0;--card:#fff;--ink:#2b2118;--mute:#7a6a5a;--acc:#e8590c;--acc2:#fff0e3;--ok:#2f9e44;--no:#c92a2a;--line:#f0dfcc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1612;--card:#2a211a;--ink:#f5ebe0;--mute:#b8a794;--acc:#ff8a3d;--acc2:#3a2a1e;--ok:#69db7c;--no:#ff8787;--line:#40332a}}
+:root[data-theme="dark"]{--bg:#1c1612;--card:#2a211a;--ink:#f5ebe0;--mute:#b8a794;--acc:#ff8a3d;--acc2:#3a2a1e;--ok:#69db7c;--no:#ff8787;--line:#40332a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:8px 0 2px}
+.sub{color:var(--mute);margin:0 0 16px}
+nav{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0;-webkit-overflow-scrolling:touch}
+nav button{flex:1;white-space:nowrap;padding:10px 12px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font-size:.9rem;cursor:pointer}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:8px}
+input,select{flex:1;min-width:0;min-height:44px;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1rem}
+.btn{padding:11px 16px;border:0;border-radius:10px;background:var(--acc);color:#fff;font-weight:600;font-size:1rem;cursor:pointer}
+.btn.ghost{background:var(--acc2);color:var(--acc)}
+.btn.big{width:100%;padding:15px;font-size:1.1rem;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--acc2);padding:6px 12px;border-radius:99px;font-size:.95rem}
+.chip button{border:0;background:none;color:var(--mute);cursor:pointer;font-size:1rem;padding:0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.opt{padding:12px 8px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);cursor:pointer;font-size:.95rem;text-align:center}
+.opt.like{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}
+.opt.veto{border-color:var(--no);background:color-mix(in srgb,var(--no) 15%,var(--card));text-decoration:line-through}
+.legend{font-size:.85rem;color:var(--mute);margin:6px 0 12px}
+.res{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.res:last-child{border:0}
+.bar{height:8px;background:var(--acc);border-radius:4px}
+.winner{text-align:center;padding:22px 12px}
+.winner .em{font-size:3rem}
+.winner h2{margin:6px 0;font-size:1.7rem;color:var(--acc)}
+.mute{color:var(--mute);font-size:.9rem}
+.hide{display:none}
+.bb{padding:10px 12px;border-radius:14px;margin:6px 0;max-width:92%;white-space:pre-wrap;line-height:1.5}.bu{background:var(--acc);color:#fff;margin-left:auto}.ba{background:var(--acc2)}
+a.btn{text-decoration:none;display:inline-block;font-size:.9rem;padding:8px 12px}
+label.chk{display:flex;gap:8px;align-items:center;margin:10px 0;font-size:.95rem}
+label.chk input{flex:none;width:18px;height:18px}
+html{-webkit-text-size-adjust:100%}button,a{touch-action:manipulation}
+.tg{border:2px solid transparent;cursor:pointer;color:var(--ink);font-size:.95rem}.tg.on{border-color:var(--acc);background:var(--acc);color:#fff}
+#wreg,#wsort{min-width:0}.res a.btn{flex:none}
+@media (max-width:480px){h1{font-size:1.35rem}main{padding:12px}nav button{padding:10px 9px;font-size:.85rem}.row{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<main>
+<h1>🍽️ Makan Apa Hari Ini?</h1>
+<p class="sub">Tidak ada lagi bingung dan debat soal resto. Semua suara keluarga dihitung adil.</p>
+
+<nav id="nav">
+<button data-t="fam" class="on">1. Keluarga</button>
+<button data-t="vote">2. Voting</button>
+<button data-t="res">3. Hasil</button>
+<button data-t="place">📍 Resto Sekitar</button>
+<button data-t="wis">🏞️ Wisata</button>
+</nav>
+
+<section id="fam">
+<div class="card">
+<b>Siapa saja yang ikut makan?</b>
+<div class="row" style="margin-top:10px"><input id="mname" placeholder="Nama (mis. Ayah, Ibu, Adit)" maxlength="20"><button class="btn" id="addm">Tambah</button></div>
+<div class="chips" id="mlist"></div>
+<button class="btn big" id="tovote">Lanjut ke Voting →</button>
+</div>
+</section>
+
+<section id="vote" class="hide">
+<div class="card">
+<div class="mute" id="vwho"></div>
+<h2 id="vname" style="margin:2px 0 4px"></h2>
+<div class="legend">Tap 1x = 👍 mau · Tap 2x = 🚫 tidak mau · Tap 3x = netral</div>
+<div class="grid" id="vgrid"></div>
+<div class="row" style="margin-top:14px">
+<button class="btn ghost" id="vprev">← Sebelumnya</button>
+<button class="btn" id="vnext">Berikutnya →</button>
+</div>
+</div>
+</section>
+
+<section id="res" class="hide">
+<div class="card winner" id="win"><div class="em">🎲</div><p class="mute">Tekan tombol untuk mengundi pemenang dari pilihan terbaik.</p></div>
+<button class="btn big" id="spin" style="margin:0 0 14px">🎲 Undi Pemenang!</button>
+<div class="card"><b>Peringkat kecocokan</b><div id="rank"></div></div>
+</section>
+
+<section id="wis" class="hide">
+<div class="card">
+<b>🏞️ Wisata Bali</b>
+<p class="mute" id="winfo" style="margin:4px 0 10px"></p>
+<label class="mute">Rumah saya di kota:</label>
+<div class="row" style="margin:4px 0 8px"><select id="homeB"></select><button class="btn ghost" id="geo2">Pakai GPS</button></div>
+<label class="mute">Radius yang saya mau: <b id="radv2">tanpa batas</b></label>
+<input type="number" id="rad2" min="1" step="any" inputmode="decimal" placeholder="Ketik radius dalam km (kosong = tanpa batas)" style="width:100%;margin-top:4px">
+<div class="mute" style="margin-top:6px">Tipe wisata yang mau dikunjungi (boleh pilih lebih dari satu):</div>
+<div class="chips" id="wchips"></div>
+<div class="row" style="margin:10px 0"><select id="wreg"></select><select id="wsort"><option value="dekat">Urut: Terdekat</option><option value="rank">Urut: Top 50</option></select></div>
+<div id="wl"></div>
+</div>
+</section>
+
+<section id="place" class="hide">
+<div class="card">
+<b>🍽️ Resto & Tempat Makan</b>
+<p class="mute" id="rinfo" style="margin:4px 0 10px"></p>
+<label class="mute">Rumah saya di kota:</label>
+<div class="row" style="margin:4px 0 8px"><select id="homeA"></select><button class="btn ghost" id="geo">Pakai GPS</button></div>
+<label class="mute">Radius yang saya mau (km): <b id="radv">tanpa batas</b></label>
+<input type="number" id="rad" min="1" step="any" inputmode="decimal" placeholder="Ketik radius dalam km (kosong = tanpa batas)" style="width:100%;margin-top:4px">
+<div class="mute" style="margin-top:8px">Jenis masakan yang mau dimakan (boleh pilih lebih dari satu):</div>
+<div class="chips" id="rchips"></div>
+<div class="row" style="margin:10px 0"><select id="rreg"></select><select id="rsort"><option value="dekat">Urut: Terdekat</option><option value="murah">Urut: Termurah</option></select></div>
+<label class="chk"><input type="checkbox" id="halal"> Sembunyikan resto yang menyajikan babi</label>
+<div id="near"></div>
+</div>
+<div class="card">
+<b>⭐ Resto favorit keluarga</b>
+<p class="mute" style="margin:4px 0 10px">Tambahkan tempat langganan sendiri yang belum ada di daftar.</p>
+<div class="row"><input id="pname" placeholder="Nama resto"></div>
+<div class="row" style="margin-top:8px"><select id="pcui"></select><button class="btn" id="addp">Simpan</button></div>
+<div class="chips" id="plist"></div>
+</div>
+</section>
+</main>
+
+<script>
+var C=[["padang","🍛","Masakan Padang"],["seafood","🦐","Seafood"],["bakar","🍢","Sate & Bakar"],["mie","🍜","Bakso & Mie"],["ayam","🍗","Ayam Goreng"],["jepang","🍣","Jepang"],["korea","🥘","Korea"],["western","🥩","Steak & Western"],["pizza","🍕","Pizza & Pasta"],["chinese","🥡","Chinese"],["jawa","🍲","Sunda & Jawa"],["bali","🌴","Masakan Bali"],["soto","🥣","Soto & Sup"],["veg","🥗","Vegetarian"],["timteng","🥙","Timur Tengah & Turki"],["kafe","☕","Kafe, Brunch & Fusion"]];
+var S={m:[],p:[],i:0};
+try{var x=localStorage.getItem("makanapa");if(x)S=JSON.parse(x)}catch(e){}
+function save(){try{localStorage.setItem("makanapa",JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+function cn(id){return C.filter(function(c){return c[0]==id})[0]}
+function tab(t){["fam","vote","res","place","wis"].forEach(function(s){$(s).classList.toggle("hide",s!=t)});
+document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.t==t)});
+if(t=="vote")rv();if(t=="res")rr();if(t=="place")rn();if(t=="wis")rw()}
+document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){tab(b.dataset.t)}});
+function rm(){var l=$("mlist");l.innerHTML="";
+S.m.forEach(function(m,k){var c=document.createElement("span");c.className="chip";c.textContent="👤 "+m.name+" ";
+var b=document.createElement("button");b.textContent="✕";b.onclick=function(){S.m.splice(k,1);save();rm()};c.appendChild(b);l.appendChild(c)})}
+function addm(){var v=$("mname").value.trim();if(!v)return;S.m.push({name:v,v:{}});$("mname").value="";save();rm()}
+$("addm").onclick=addm;$("mname").onkeydown=function(e){if(e.key=="Enter")addm()};
+$("tovote").onclick=function(){if(S.m.length<1){alert("Tambahkan minimal 1 anggota dulu ya.");return}S.i=0;tab("vote")};
+function rv(){if(!S.m.length){tab("fam");return}if(S.i>=S.m.length)S.i=0;var m=S.m[S.i];
+$("vwho").textContent="Giliran "+(S.i+1)+" dari "+S.m.length;$("vname").textContent="Halo, "+m.name+"! Kamu mau makan apa?";
+var g=$("vgrid");g.innerHTML="";
+C.forEach(function(c){var b=document.createElement("button");var s=m.v[c[0]]||0;
+b.className="opt"+(s==1?" like":s==-1?" veto":"");b.textContent=c[1]+" "+c[2];
+b.onclick=function(){var n=m.v[c[0]]||0;n=n==0?1:n==1?-1:0;if(n==0)delete m.v[c[0]];else m.v[c[0]]=n;save();rv()};g.appendChild(b)});
+$("vnext").textContent=S.i==S.m.length-1?"Lihat Hasil ✓":"Berikutnya →"}
+$("vprev").onclick=function(){if(S.i>0){S.i--;rv()}};
+$("vnext").onclick=function(){if(S.i<S.m.length-1){S.i++;rv();window.scrollTo(0,0)}else tab("res")};
+function scores(){var r=C.map(function(c){var l=0,v=0;S.m.forEach(function(m){var s=m.v[c[0]]||0;if(s==1)l++;if(s==-1)v++});return{id:c[0],l:l,v:v}});
+var ok=r.filter(function(x){return x.v==0});if(!ok.length)ok=r.slice();
+ok.sort(function(a,b){return b.l-a.l});return{ok:ok,r:r}}
+function rr(){var s=scores(),ok=s.ok,mx=Math.max(1,S.m.length),box=$("rank");box.innerHTML="";
+ok.slice(0,6).forEach(function(x){var c=cn(x.id),d=document.createElement("div");d.className="res";
+d.innerHTML='<div style="width:150px;flex:none">'+c[1]+" "+c[2]+'</div><div style="flex:1"><div class="bar" style="width:'+Math.max(4,x.l/mx*100)+'%"></div></div><div class="mute">'+x.l+"👍</div>";box.appendChild(d)});
+var vt=s.r.filter(function(x){return x.v>0}).length;
+if(vt){var p=document.createElement("p");p.className="mute";p.textContent=vt+" pilihan dicoret karena ada yang tidak mau.";box.appendChild(p)}}
+$("spin").onclick=function(){if(!S.m.length){tab("fam");return}var s=scores().ok,top=s[0].l,pool=s.filter(function(x){return x.l==top}),w=$("win"),n=0;
+$("spin").disabled=true;
+var t=setInterval(function(){var c=cn(C[Math.floor(Math.random()*C.length)][0]);w.innerHTML='<div class="em">'+c[1]+'</div><h2>'+c[2]+"</h2>";
+if(++n>16){clearInterval(t);var f=cn(pool[Math.floor(Math.random()*pool.length)].id);
+var ps=S.p.filter(function(p){return p.c==f[0]});
+var h='<div class="em">'+f[1]+'</div><h2>'+f[2]+'</h2><p class="mute">Cocok untuk '+top+' dari '+S.m.length+' orang, dan tidak ada yang menolak 🎉</p>';
+var ns=near(f[0]).slice(0,3);
+h+=ns.length?'<p><b>📍 Resto terdekat dari kita:</b></p><div style="text-align:left">'+ns.map(pc).join("")+'</div>':'<p class="mute">Tidak ada resto jenis ini dalam radius '+rl()+'. Coba perbesar radius di tab Resto Sekitar.</p>';
+if(ps.length)h+='<p>⭐ Favorit keluarga: '+ps.map(function(q){return esc(q.n)}).join(", ")+'</p>';
+w.innerHTML=h;$("spin").disabled=false}},90)};
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+C.forEach(function(c){var o=document.createElement("option");o.value=c[0];o.textContent=c[1]+" "+c[2];$("pcui").appendChild(o)});
+function rp(){var l=$("plist");l.innerHTML="";S.p.forEach(function(p,k){var c=document.createElement("span");c.className="chip";c.textContent=cn(p.c)[1]+" "+p.n+" ";
+var b=document.createElement("button");b.textContent="✕";b.onclick=function(){S.p.splice(k,1);save();rp()};c.appendChild(b);l.appendChild(c)})}
+$("addp").onclick=function(){var v=$("pname").value.trim();if(!v)return;S.p.push({n:v,c:$("pcui").value});$("pname").value="";save();rp()};
+var D=[["Ambun Minang","padang",-8.5349,115.1268,2],["RM Padang Simpang Tigo","padang",-8.5398,115.1270,2],["Bareh Solok","padang",-8.5550,115.1417,2],["Mak’na Masakan Padang","padang",-8.5441,115.1403,2],
+["Ikan Bakar SS Sarin Segara","seafood",-8.5457,115.1203,2],["Warung Tulus Lobster (Yeh Gangga)","seafood",-8.5916,115.0692,0],["Kurnia Seafood Bali","seafood",-8.6068,115.1092,0],["Warung Danau Batur (Mujair Nyatnyat)","seafood",-8.5356,115.1336,1],
+["Warung Soto Sate Babi/Ayam","bakar",-8.5403,115.1325,0,1],["Sate Ayam Pak Jaya","bakar",-8.5435,115.0857,0],["Balung Sate Made","bakar",-8.5404,115.1262,2,1],
+["Babi Guling BSM","bali",-8.5109,115.1296,1,1],["Babi Guling Manis Jambe","bali",-8.5317,115.1235,1,1],["Warung Men Sedu","bali",-8.5387,115.1158,2,1],["Warung Asri Jambe","bali",-8.5336,115.1238,1,1],["Kirana Garden & Resto","bali",-8.5240,115.1153,2],["Standar Lokal (Urutan Babi Asap)","bali",-8.3889,115.1053,2,1],
+["Mie Ayam Bakso Solo Mas Pay","mie",-8.5402,115.1191,1],["Depot Mie Ayam Bakso Mas Riski","mie",-8.5382,115.1221,1],["Kedai Mie Ayam & Bakso Makmur","mie",-8.5389,115.1298,1],["Mie Ayam Bakso Pak Markeso","mie",-8.5479,115.1197,1],["Mie Ayam Bakso Solo Pak Man","mie",-8.5466,115.1146,1],
+["Warung Sidomulyo (ayam bakar/goreng)","ayam",-8.5466,115.1176,2],
+["Enya Izakaya (Pererenan)","jepang",-8.6370,115.1251,4],["IKI Izakaya (Canggu)","jepang",-8.6502,115.1339,0],
+["Reddog Tabanan","korea",-8.5522,115.1326,2],["KIM KIM Food","korea",-8.5482,115.1438,2],["Younghee Bali (Kerobokan)","korea",-8.6759,115.1583,4],
+["Warung Steak Ayam 20","western",-8.5385,115.1231,1],["Jalajala Steak & Shake","western",-8.5502,115.1058,2],
+["Bon Appetit NBB Pizza","pizza",-8.5474,115.1442,2],["My Lover Pizza, Steak & Gelato","pizza",-8.5516,115.1301,0],
+["Halo Kedungu","chinese",-8.5967,115.0943,2,1],["Warung Kenanga","chinese",-8.5408,115.1261,2],
+["Nasi Goreng Jawa Mas Tole","jawa",-8.5351,115.1329,0],["Warung Wong Jowo","jawa",-8.5384,115.1113,1],
+["Soto Ayam Cak Adi","soto",-8.5535,115.1374,2],["Depot Suroboyo","soto",-8.5453,115.1205,0],
+["Warung Ceria Vegetarian","veg",-8.5379,115.1301,2],["Warung Nanda Vegetarian","veg",-8.5419,115.1307,1],["Cafe LAUT (Kedungu)","veg",-8.5944,115.0874,2]];
+var R=1e9,H=false,L=[-8.5413,115.1236],F="",LN="pusat Kota Tabanan";
+function km(a,b,c,d){var r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+function near(cid){return D.filter(function(p){return(!cid||p[1]==cid)&&!(H&&p[5])}).map(function(p){return{n:p[0],c:p[1],la:p[2],lo:p[3],pr:p[4],pk:p[5],d:km(L[0],L[1],p[2],p[3])}}).filter(function(p){return p.d<=R}).sort(function(a,b){return a.d-b.d})}
+function pc(p){var pr=p.pr==1?" · Murah":p.pr==2?" · Sedang":p.pr==4?" · Mahal":"";return '<div class="res"><div style="flex:1"><b>'+(p.rk?"#"+p.rk+" ":"")+esc(p.n)+'</b><div class="mute">'+cn(p.c)[1]+" "+p.d.toFixed(1)+" km"+pr+(p.pk?" · 🐷 ada babi":"")+'</div>'+(p.nt?'<div class="mute">'+esc(p.nt)+'</div>':'')+'</div><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+p.la+","+p.lo+'">Peta</a></div>'}
+function rn(){$("locinfo").textContent="Jarak dihitung dari "+LN+".";$("radv").textContent=rl();var l=near(F);$("near").innerHTML=l.length?l.map(pc).join(""):'<p class="mute">Tidak ada resto dalam radius ini.</p>'}
+$("halal").onchange=function(){H=this.checked;rn()};
+$("geo").onclick=function(){if(!navigator.geolocation){alert("Browser tidak mendukung lokasi.");return}
+navigator.geolocation.getCurrentPosition(function(p){L=[p.coords.latitude,p.coords.longitude];LN="lokasi Anda saat ini";rn();rw()},function(){alert("Lokasi tidak bisa diakses, jadi jarak tetap dihitung dari pusat Kota Tabanan.")})};
+var W=[["Tanah Lot","pura",-8.6212,115.0868,"Pura di atas karang laut, ramai saat sunset. Datang pagi agar lebih sepi."],
+["Pura Taman Ayun","pura",-8.5418,115.1725,"Pura kerajaan dengan taman dan kolam, cukup sekitar 1 jam."],
+["Pura Luhur Batukaru","pura",-8.3720,115.1026,"Pura sakral di hutan lereng Gunung Batukaru, sejuk dan tenang."],
+["Ulun Danu Beratan (Bedugul)","pura",-8.2752,115.1668,"Pura di tepi danau, udara sejuk, ada sewa perahu dan kafe."],
+["Pura Uluwatu","pura",-8.8291,115.0849,"Pura di tebing laut dengan tari kecak saat sunset. Jaga barang dari monyet."],
+["Sawah Terasering Jatiluwih","sawah",-8.3701,115.1312,"Warisan UNESCO, banyak jalur jalan kaki. Bawa topi dan air."],
+["Sawah Terasering Tegallalang","sawah",-8.4317,115.2793,"Terasering populer dekat Ubud, ada ayunan dan kafe."],
+["Pantai Kedungu","pantai",-8.6089,115.0833,"Pasir hitam luas, bagus untuk sunset dan selancar."],
+["Pantai Pasut","pantai",-8.5634,115.0367,"Pasir hitam vulkanik yang lapang, tiket masuk murah."],
+["The Beach Love (Kedungu)","pantai",-8.6128,115.0840,"Spot sunset di tebing, ada minimum belanja."],
+["Bali Camel Adventure (Kelan)","satwa",-8.7526,115.1637,"Naik unta di tepi pantai dekat bandara."],
+["Sangeh Monkey Forest","satwa",-8.4818,115.2065,"Hutan pala dengan monyet yang relatif jinak, cocok untuk anak."],
+["Sacred Monkey Forest Ubud","satwa",-8.5194,115.2606,"Hutan monyet di Ubud dengan pura-pura kuno."],
+["Bali Zoo","satwa",-8.5919,115.2657,"Kebun binatang dengan pengalaman memberi makan gajah."],
+["Bali Safari & Marine Park","satwa",-8.5822,115.3473,"Safari bus, pertunjukan satwa, dan akuarium. Cukup untuk seharian."],
+["Taman Mumbul Sangeh","budaya",-8.4841,115.2124,"Kolam pemandian suci dengan ikan koi, singgah singkat."],
+["GWK Cultural Park","budaya",-8.8102,115.1681,"Patung Garuda Wisnu raksasa, siapkan 3–4 jam dan alas kaki nyaman."],
+["Air Terjun Tegenungan","air",-8.5754,115.2890,"Mudah dijangkau, bisa berenang, sekitar 200 anak tangga."],
+["Air Terjun Sumampan","air",-8.5515,115.2904,"Lebih sepi, ada ukiran batu, tangga curam."],
+["Air Terjun Ulu Petanu","air",-8.4144,115.3009,"Kolam koi dan gua, sekitar 90 anak tangga."],
+["Air Terjun Sekumpul","air",-8.1775,115.1826,"Salah satu yang terindah di Bali Utara. Trekking berat, tanyakan harga resmi di loket."],
+["Air Terjun Lemukih","air",-8.2095,115.1718,"Seluncur air alami dan air terjun, sekitar 700 anak tangga. Sepakati tarif dulu."]];
+var WC=[["","Semua jenis wisata"],["pura","🛕 Pura"],["sawah","🌾 Sawah terasering"],["pantai","🏖️ Pantai & sunset"],["air","💦 Air terjun"],["satwa","🐒 Satwa & keluarga"],["budaya","🗿 Budaya & taman"]],WF="";
+var WE={pura:"🛕",sawah:"🌾",pantai:"🏖️",air:"💦",satwa:"🐒",budaya:"🗿",seru:"🎢"};
+
+function fm(t){return t>=60?Math.floor(t/60)+" jam"+(t%60?" "+t%60+" mnt":""):t+" mnt"}
+function wc(p){var t=Math.max(5,Math.round(p.d*2/5)*5);return '<div class="res"><div style="flex:1"><b>'+WE[p.c]+" "+esc(p.n)+'</b><div class="mute">'+p.d.toFixed(0)+" km · perkiraan ±"+fm(t)+' berkendara</div><div class="mute">'+esc(p.nt)+'</div></div><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+p.la+","+p.lo+'">Peta</a></div>'}
+function rw(){var l=W.map(function(p){return{n:p[0],c:p[1],la:p[2],lo:p[3],nt:p[4],d:km(L[0],L[1],p[2],p[3])}}).filter(function(p){return p.d<=R&&(!WF||p.c==WF)}).sort(function(a,b){return a.d-b.d});
+$("radv2").textContent=R;$("winfo").textContent=l.length+" tempat dalam radius "+R+" km dari "+LN+", urut dari yang terdekat. Waktu tempuh hanya perkiraan kasar, tergantung kemacetan.";
+$("wl").innerHTML=l.length?l.map(wc).join(""):'<p class="mute">Tidak ada tempat wisata dalam radius ini.</p>'}
+function sr(v){R=+v;$("rad").value=v;$("rad2").value=v;rn();rw()}
+
+$("geo2").onclick=function(){$("geo").onclick()};
+var W2=[["Pura Tirta Empul","pura",-8.4157,115.3153,"Pemandian suci untuk ritual melukat. Pakai kain dan datang pagi."],
+["Goa Gajah","pura",-8.5234,115.2872,"Situs kuno dengan gua berukir dan kolam pemandian."],
+["Pura Besakih","pura",-8.3737,115.4513,"Pura terbesar dan tersuci di Bali di lereng Gunung Agung."],
+["Pura Lempuyang","pura",-8.3918,115.6316,"Gerbang Surga yang terkenal. Antre foto bisa 2 jam, berangkat subuh."],
+["Pura Rambut Siwi","pura",-8.4031,114.7658,"Pura tebing tepi laut yang sepi di Jembrana."],
+["Pantai Melasti","pantai",-8.8477,115.1607,"Tebing putih dan air biru, tiket masuk murah."],
+["Pantai Pandawa","pantai",-8.8445,115.1858,"Pasir putih dan air toska, cocok untuk keluarga."],
+["Pantai Padang Padang","pantai",-8.8109,115.1038,"Pantai kecil di antara tebing, hati-hati monyet."],
+["Pantai Nusa Dua","pantai",-8.8004,115.2360,"Ombak tenang dan bersih, pas untuk berenang bersama anak."],
+["Pantai Kuta","pantai",-8.7184,115.1686,"Pantai klasik untuk sunset dan belajar selancar."],
+["Pantai Seminyak","pantai",-8.6913,115.1560,"Sunset, kafe, dan beach club sepanjang pantai."],
+["Pantai Batu Bolong (Canggu)","pantai",-8.6591,115.1306,"Pantai selancar dengan kafe dan suasana santai."],
+["Pantai Sanur","pantai",-8.6850,115.2620,"Ombak tenang, jalur pejalan kaki, sunrise."],
+["Pantai Jimbaran","pantai",-8.7900,115.1650,"Makan seafood bakar sambil menikmati sunset."],
+["Pantai Lovina","pantai",-8.1590,115.0260,"Pasir hitam tenang, perahu melihat lumba-lumba pagi hari."],
+["Pantai Amed","pantai",-8.3470,115.6580,"Snorkeling dan diving dengan latar Gunung Agung."],
+["Kelingking (Nusa Penida)","pantai",-8.7514,115.4732,"Tebing berbentuk T-Rex yang terkenal. Turun ke pantai sangat curam."],
+["Angel’s Billabong (Nusa Penida)","pantai",-8.7335,115.4490,"Kolam alami di tepi tebing. Pakai sepatu, ombak bisa tinggi."],
+["Broken Beach (Nusa Penida)","pantai",-8.7328,115.4508,"Lengkungan batu raksasa di atas laut, dekat Angel’s Billabong."],
+["Air Terjun Tukad Cepung","air",-8.4410,115.3868,"Air terjun di dalam gua dengan sinar matahari, jalan menyusuri sungai."],
+["Air Terjun Goa Giri Campuhan","air",-8.4586,115.3831,"Jalan lewat sawah dan terowongan, tiket murah. Bawa senter."],
+["Air Terjun Banyumala","air",-8.2172,115.1017,"Air terjun kembar yang bisa untuk berenang, sekitar 400 m tangga."],
+["Air Terjun Twin Wanagiri","air",-8.2151,115.1169,"Tiga air terjun di hutan, sepi, trekking cukup berat."],
+["Campuhan Ridge Walk","alam",-8.5036,115.2548,"Jalan santai 1–2 km di punggung bukit Ubud. Pagi atau sore."],
+["Twin Lakes Munduk","alam",-8.2473,115.0991,"Pemandangan Danau Buyan dan Tamblingan, bisa trekking dan naik kano."],
+["Bali Handara Gate","alam",-8.2530,115.1583,"Gerbang foto di dataran tinggi. Datang pagi agar tidak berkabut atau antre."],
+["Taman Nasional Bali Barat (Menjangan)","alam",-8.1276,114.4753,"Snorkeling di Pulau Menjangan, trekking dan melihat burung."],
+["Gunung Batur & Kintamani","alam",-8.2433,115.3553,"Pemandangan kaldera dan danau, trekking sunrise populer."],
+["Tirta Gangga","budaya",-8.4123,115.5873,"Istana air dengan kolam koi dan jembatan batu."],
+["Bajra Sandhi","budaya",-8.6718,115.2339,"Monumen dan museum sejarah di taman Renon, tiket murah."],
+["Desa Penglipuran","budaya",-8.4222,115.3540,"Desa adat yang rapi dan bersih dengan rumah tradisional."]];
+W=W.concat(W2);
+var RK=["Tanah Lot","Sawah Terasering Jatiluwih","Ulun Danu Beratan (Bedugul)","Pura Tirta Empul","Pura Uluwatu","Sacred Monkey Forest Ubud","Sawah Terasering Tegallalang","Pantai Melasti","Pantai Pandawa","Kelingking (Nusa Penida)","GWK Cultural Park","Air Terjun Tegenungan","Pura Besakih","Tirta Gangga","Air Terjun Banyumala","Air Terjun Tukad Cepung","Pura Luhur Batukaru","Pura Taman Ayun","Campuhan Ridge Walk","Sangeh Monkey Forest","Pantai Kuta","Pantai Padang Padang","Air Terjun Sekumpul","Bali Safari & Marine Park","Bali Zoo","Pura Lempuyang","Pantai Nusa Dua","Pantai Kedungu","Pantai Sanur","Desa Penglipuran","Bajra Sandhi","Goa Gajah","Pantai Seminyak","Pantai Jimbaran","Broken Beach (Nusa Penida)","Angel’s Billabong (Nusa Penida)","Pura Rambut Siwi","Gunung Batur & Kintamani","Bali Handara Gate","Twin Lakes Munduk","Air Terjun Sumampan","Air Terjun Ulu Petanu","Air Terjun Goa Giri Campuhan","Pantai Pasut","Pantai Lovina","Pantai Amed","Taman Nasional Bali Barat (Menjangan)","Pantai Batu Bolong (Canggu)","Taman Mumbul Sangeh","Air Terjun Twin Wanagiri"];
+var RG=[["Tabanan",-8.54,115.12],["Tabanan Utara–Bedugul",-8.27,115.12],["Ubud–Gianyar",-8.50,115.27],["Canggu–Seminyak–Kuta",-8.69,115.16],["Uluwatu–Jimbaran–Nusa Dua",-8.80,115.17],["Denpasar–Sanur",-8.68,115.24],["Kintamani–Bangli",-8.33,115.36],["Karangasem–Amed",-8.40,115.55],["Lovina–Buleleng",-8.16,115.03],["Bali Barat–Jembrana",-8.2,114.6],["Nusa Penida",-8.74,115.46],["Banyuwangi–Ijen",-8.15,114.3],["Bromo–Malang–Batu",-7.95,112.75],["Surabaya",-7.26,112.75],["Yogyakarta–Magelang",-7.80,110.40],["Semarang–Dieng",-7.0,110.2],["Bandung–Jawa Barat",-6.9,107.6],["Jakarta",-6.2,106.85],["Bogor",-6.65,106.85]];
+var WC=[["pura","🛕 Pura"],["sawah","🌾 Sawah"],["pantai","🏖️ Pantai"],["air","💦 Air terjun"],["alam","⛰️ Alam & gunung"],["satwa","🐒 Satwa & anak"],["budaya","🗿 Budaya & taman"],["seru","🎢 Seru & taman hiburan"]];
+WE={pura:"🛕",sawah:"🌾",pantai:"🏖️",air:"💦",alam:"⛰️",satwa:"🐒",budaya:"🗿"};
+var WS={},WR="",WO="dekat";
+function reg(a,b){var m=1e9,r="";RG.forEach(function(g){var d=km(a,b,g[1],g[2]);if(d<m){m=d;r=g[0]}});return r}
+WC.forEach(function(c){var b=document.createElement("button");b.className="chip tg";b.textContent=c[1];b.onclick=function(){if(WS[c[0]])delete WS[c[0]];else WS[c[0]]=1;b.classList.toggle("on");rw()};$("wchips").appendChild(b)});
+var o1=document.createElement("option");o1.value="";o1.textContent="Semua wilayah";$("wreg").appendChild(o1);
+RG.forEach(function(g){var o=document.createElement("option");o.value=g[0];o.textContent=g[0];$("wreg").appendChild(o)});
+$("wreg").onchange=function(){WR=this.value;rw()};$("wsort").onchange=function(){WO=this.value;rw()};
+function wc(p){var t=Math.max(5,Math.round(p.d*2/5)*5),bt=/Nusa Penida/.test(p.n);return '<div class="res"><div style="flex:1"><b>'+(p.rk?(p.rk>100?"Jawa #"+(p.rk-100):"#"+p.rk)+" ":"")+WE[p.c]+" "+esc(p.n)+'</b><div class="mute">'+p.rg+" · "+p.d.toFixed(0)+" km · "+(bt?"⛴️ naik kapal dari Sanur/Padang Bai":"perkiraan ±"+fm(t)+" berkendara")+'</div><div class="mute">'+esc(p.nt)+'</div></div><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+p.la+","+p.lo+'">Peta</a></div>'}
+function rw(){var rm={};RK.forEach(function(n,i){rm[n]=i+1});RJ.forEach(function(n,i){rm[n]=101+i});var sel=Object.keys(WS);
+var l=W.map(function(p){return{n:p[0],c:p[1],la:p[2],lo:p[3],nt:p[4],d:km(L[0],L[1],p[2],p[3]),rk:rm[p[0]]||0,rg:reg(p[2],p[3])}}).filter(function(p){return p.d<=R&&(!sel.length||sel.indexOf(p.c)>-1)&&(!WR||p.rg==WR)&&(WO!="rank"||p.rk)});
+l.sort(WO=="rank"?function(a,b){return a.rk-b.rk}:function(a,b){return a.d-b.d});
+$("radv2").textContent=rl();$("winfo").textContent=l.length+" tempat wisata, radius "+rl()+" dari "+LN+(WO=="rank"?", urut Top (Bali 1–50, lalu Jawa; berdasarkan popularitas dan ulasan).":", urut dari yang terdekat.")+" Waktu tempuh hanya perkiraan kasar.";
+$("wl").innerHTML=l.length?l.map(wc).join(""):emp(W)}
+var D2=[["Warung Makan Bu Rus (Ubud)","bali",-8.5050,115.2630,2,1],["Babi Guling Ibu Gendut (Ubud)","bali",-8.5285,115.2639,2,1],["Babi Guling Pande Egi (Gianyar)","bali",-8.5269,115.3252,2,1],["Babi Guling Gung Cung (Ubud)","bali",-8.5034,115.2635,2,1],["Warung Makan Bahagia Pengosekan (Ubud)","bali",-8.5175,115.2688,1],
+["Antawali Kitchen (Ubud, halal)","jawa",-8.5119,115.2656,2,2],
+["Uma Garden (Kerobokan)","western",-8.6703,115.1611,4],["Santanera (Canggu)","western",-8.6519,115.1311,4],["Mamasan (Kerobokan)","chinese",-8.6822,115.1648,4,1],["Kilo Kitchen (Seminyak)","kafe",-8.6859,115.1647,4,1],
+["Bawang Merah Beachfront (Jimbaran)","seafood",-8.7556,115.1670,4],["Legong Bumbu Bali (Jimbaran)","seafood",-8.7587,115.1690,0],["Jimbaran Bay Seafood","seafood",-8.7594,115.1692,4],["Hatiku Jimbaran","seafood",-8.7803,115.1649,4],["Made Bagus Cafe (Jimbaran)","seafood",-8.7804,115.1649,4],
+["Warung Kecil (Sanur)","jawa",-8.7030,115.2619,2],["Lilla Warung (Sanur)","jawa",-8.6899,115.2625,2],["Warung Baby Monkeys (Sanur)","kafe",-8.7074,115.2563,2,1],["Warung Mbok Luh (Sanur)","jawa",-8.6867,115.2605,2,1],["Warung Makan Sanur","jawa",-8.7043,115.2609,2],
+["Melodi Rasa Resto (Denpasar, halal)","jawa",-8.6907,115.2382,2,2],["Warung Makan Nikmat (Kuta, halal)","jawa",-8.7258,115.1745,2,2],["Turkish Halal Food (Kuta)","timteng",-8.7246,115.1754,3,2],["Turkish Glory Chef (Legian)","timteng",-8.7188,115.1731,0],
+["NUSA (Nusa Dua)","pizza",-8.8017,115.2293,4],["Sukun Restaurant (Benoa)","bali",-8.7704,115.2220,0],["Mandala Restaurant (Benoa)","western",-8.7850,115.2250,4],["Le Bleu by K Club (Nusa Dua)","western",-8.7999,115.2350,4],["Ohana Bali (Ungasan)","kafe",-8.8245,115.1420,0],
+["Warung Wayan (Lovina)","jawa",-8.1603,115.0292,2],["Warung 3D (Lovina)","seafood",-8.1759,115.0010,2],["Warung Ibu Wina (Lovina)","seafood",-8.1605,115.0284,2,1],["Warung Taman Bali (Lovina)","jawa",-8.1598,115.0270,2],["Warung Ayu (Lovina)","seafood",-8.1602,115.0289,2],
+["Green Melon Warung (Amed)","bali",-8.3581,115.6930,2],["Warung Agung (Amed)","jawa",-8.3515,115.6830,2],["Galanga (Amed)","bali",-8.3442,115.6692,2],["Joli Best View Cafe (Amed)","kafe",-8.3390,115.6615,2],["Asmat Restaurant (Amed)","kafe",-8.3722,115.6720,0]];
+D=D.concat(D2);
+function near(cid){return D.filter(function(p){return(!cid||p[1]==cid)&&!(H&&p[5]==1)}).map(function(p){return{n:p[0],c:p[1],la:p[2],lo:p[3],pr:p[4],pk:p[5],d:km(L[0],L[1],p[2],p[3])}}).filter(function(p){return p.d<=R}).sort(function(a,b){return a.d-b.d})}
+function pc(p){var pr=p.pr==1?" · Murah":p.pr==2?" · Sedang":p.pr==4?" · Mahal":"",tg=p.pk==1?" · 🐷 ada babi":p.pk==2?" · 🕌 halal":"";return '<div class="res"><div style="flex:1"><b>'+(p.rk?"#"+p.rk+" ":"")+esc(p.n)+'</b><div class="mute">'+cn(p.c)[1]+" "+p.d.toFixed(1)+" km"+pr+tg+'</div>'+(p.nt?'<div class="mute">'+esc(p.nt)+'</div>':'')+'</div><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+p.la+","+p.lo+'">Peta</a></div>'}
+function rl(){return R>=1e8?"tanpa batas":R+" km"}
+function sr(v){R=(v===""||+v<=0)?1e9:+v;$("rad").value=v;$("rad2").value=v;rn();rw()}
+function sr(v,src){var n=parseFloat(String(v).replace(",","."));R=(isNaN(n)||n<=0)?1e9:n;if(src!="rad")$("rad").value=v;if(src!="rad2")$("rad2").value=v;rn();rw()}
+["rad","rad2"].forEach(function(id){["input","change","keyup"].forEach(function(ev){$(id).addEventListener(ev,function(){sr(this.value,id)})})});
+function emp(a){var m=Math.min.apply(null,a.map(function(p){return km(L[0],L[1],p[2],p[3])}));return '<p class="mute">Tidak ada yang cocok dengan filter ini. Titik hitung: '+LN+' ('+L[0].toFixed(3)+', '+L[1].toFixed(3)+'). Yang terdekat berjarak '+m.toFixed(0)+' km. Coba perbesar radius atau pilih kota rumah Anda yang benar.</p>'}
+function near(cid){return D.filter(function(p){return(!cid||p[1]==cid)&&!(H&&p[5]==1)}).map(function(p){return{n:p[0],c:p[1],la:p[2],lo:p[3],pr:p[4],pk:p[5],d:km(L[0],L[1],p[2],p[3]),rg:reg(p[2],p[3])}}).filter(function(p){return p.d<=R}).sort(function(a,b){return a.d-b.d})}
+var RS={},RR="",RO="dekat";
+C.forEach(function(c){var b=document.createElement("button");b.className="chip tg";b.textContent=c[1]+" "+c[2];b.onclick=function(){if(RS[c[0]])delete RS[c[0]];else RS[c[0]]=1;b.classList.toggle("on");rn()};$("rchips").appendChild(b)});
+var o2=document.createElement("option");o2.value="";o2.textContent="Semua wilayah";$("rreg").appendChild(o2);
+RG.forEach(function(g){var o=document.createElement("option");o.value=g[0];o.textContent=g[0];$("rreg").appendChild(o)});
+$("rreg").onchange=function(){RR=this.value;rn()};$("rsort").onchange=function(){RO=this.value;rn()};
+function rn(){$("radv").textContent=rl();var sel=Object.keys(RS),l=near("").filter(function(p){return(!sel.length||sel.indexOf(p.c)>-1)&&(!RR||p.rg==RR)});
+if(RO=="murah")l.sort(function(a,b){return(a.pr||9)-(b.pr||9)||a.d-b.d});
+$("rinfo").textContent=l.length+" tempat makan, radius "+rl()+" dari "+LN+(RO=="murah"?", urut termurah.":", urut dari yang terdekat.");
+$("near").innerHTML=l.length?l.map(pc).join(""):emp(D)}
+var W3=[["Gunung Bromo (TN Bromo Tengger Semeru)","alam",-8.0219,112.9524,"Sunrise dari Penanjakan, naik jip. Dingin sekali."],
+["Kawah Ijen","alam",-8.0580,114.2420,"Api biru dini hari, trekking 2–3 jam."],
+["Air Terjun Madakaripura","air",-7.8479,113.0161,"Air terjun di ngarai, basah kuyup, wajib pemandu."],
+["Air Terjun Tumpak Sewu","air",-8.2315,112.9176,"Tirai air terjun raksasa, turunan licin."],
+["Air Terjun Coban Rondo","air",-7.8846,112.4768,"Mudah dijangkau, ada labirin dan wahana anak."],
+["Taman Nasional Baluran","alam",-7.8470,114.3570,"Savana ala Afrika di ujung timur Jawa."],
+["Batu Night Spectacular (BNS)","seru",-7.8740,112.5320,"Taman hiburan malam di Kota Batu."],
+["Kebun Binatang Surabaya","satwa",-7.2950,112.7370,"Kebun binatang tertua di Surabaya."],
+["Candi Borobudur","budaya",-7.6079,110.2038,"Candi Buddha terbesar, warisan UNESCO. Datang pagi."],
+["Candi Prambanan","pura",-7.7520,110.4915,"Kompleks candi Hindu abad ke-9, warisan UNESCO."],
+["Candi Ratu Boko","budaya",-7.7706,110.4861,"Reruntuhan istana di bukit, terkenal untuk sunset."],
+["Keraton Yogyakarta","budaya",-7.8054,110.3642,"Istana sultan dengan pertunjukan budaya (tutup Senin)."],
+["Malioboro","budaya",-7.7930,110.3657,"Jalan belanja dan kuliner khas Yogyakarta."],
+["Taman Sari","budaya",-7.8100,110.3590,"Bekas taman air keraton."],
+["Pantai Parangtritis","pantai",-8.0250,110.3290,"Pantai selatan dengan gumuk pasir dan delman."],
+["Dataran Tinggi Dieng","alam",-7.2090,109.9100,"Telaga warna, kawah, dan candi di udara sejuk."],
+["Kota Lama Semarang","budaya",-6.9683,110.4284,"Kawasan kolonial Belanda, ramai malam hari."],
+["Lawang Sewu","budaya",-6.9840,110.4100,"Bangunan kolonial ikonik di Semarang."],
+["Tangkuban Parahu","alam",-6.7593,107.6186,"Kawah gunung api dekat Lembang."],
+["Kawah Putih","alam",-7.1660,107.4020,"Danau kawah belerang di Ciwidey."],
+["Taman Safari Indonesia (Bogor)","satwa",-6.7206,106.9508,"Safari dengan mobil sendiri, pertunjukan satwa."],
+["Kebun Raya Bogor","alam",-6.5976,106.7996,"Taman botani luas untuk piknik dan jalan santai."],
+["Monas","budaya",-6.1754,106.8272,"Tugu nasional dengan pemandangan Jakarta dari puncak."],
+["Kota Tua Jakarta","budaya",-6.1352,106.8133,"Museum dan bangunan kolonial di Fatahillah."],
+["Taman Mini Indonesia Indah (TMII)","seru",-6.3045,106.8893,"Anjungan budaya seluruh provinsi, ada kereta gantung."],
+["Dunia Fantasi (Ancol)","seru",-6.1275,106.8343,"Taman hiburan terbesar di Jakarta."],
+["Faunaland (Ancol)","satwa",-6.1243,106.8358,"Mini zoo interaktif untuk anak."],
+["Pantai Pangandaran","pantai",-7.6860,108.6500,"Pantai keluarga di selatan Jawa Barat."]];
+W=W.concat(W3);
+var RJ=["Candi Borobudur","Gunung Bromo (TN Bromo Tengger Semeru)","Candi Prambanan","Keraton Yogyakarta","Malioboro","Kawah Ijen","Air Terjun Tumpak Sewu","Tangkuban Parahu","Kawah Putih","Monas","Taman Mini Indonesia Indah (TMII)","Taman Safari Indonesia (Bogor)","Kebun Raya Bogor","Dataran Tinggi Dieng","Kota Lama Semarang","Air Terjun Madakaripura","Pantai Parangtritis","Candi Ratu Boko","Taman Sari","Dunia Fantasi (Ancol)","Kebun Binatang Surabaya","Lawang Sewu","Kota Tua Jakarta","Air Terjun Coban Rondo","Taman Nasional Baluran","Pantai Pangandaran","Batu Night Spectacular (BNS)","Faunaland (Ancol)"];
+var D3=[["SEMAJA (Menteng, Jakarta)","jawa",-6.1907,106.8283,4],["Plataran Menteng (Jakarta)","jawa",-6.1919,106.8286,4],["Kaum Jakarta (Menteng)","jawa",-6.1980,106.8241,4],["Seribu Rasa Menteng (Jakarta)","jawa",-6.1955,106.8248,0],["Amanaia Menteng (Jakarta)","jawa",-6.1790,106.8405,0],
+["Hummingbird Eatery (Bandung)","kafe",-6.9049,107.6184,0],["Bijan Restoran Nusantara (Bandung)","jawa",-6.9158,107.6167,2],["Plataran Bandung","jawa",-6.9009,107.6174,4],["Miss Bee Providore (Bandung)","western",-6.8683,107.6092,2],
+["Sate Klathak Pak Jede (Yogyakarta)","bakar",-7.7739,110.4008,2],["Sate Klathak Mbah Sukarjo (Yogyakarta)","bakar",-7.8016,110.3702,2],["Gudeg Sagan (Yogyakarta)","jawa",-7.7779,110.3796,2],["Sate Klathak Pak Pong (Bantul)","bakar",-7.8715,110.3874,2],["Sate Klathak Mak Adi (Bantul)","bakar",-7.8654,110.3899,2],
+["Rawon Kalkulator (Surabaya)","soto",-7.2918,112.7401,2],["Rawon Pak Pangat (Surabaya)","soto",-7.3247,112.7254,2],["Rawon Setan Embong Malang (Surabaya)","soto",-7.2591,112.7352,2],["Soto Lamongan Cak Har (Surabaya)","soto",-7.2957,112.7814,2],["Pecel Rawon Pucang Moro Seneng (Surabaya)","jawa",-7.2843,112.7544,2],
+["Awang-Awang Sky Lounge (Batu)","kafe",-7.8796,112.5228,2],["SkyHill Dining (Batu)","kafe",-7.8844,112.5294,2],["Pondok Desa (Batu)","seafood",-7.8947,112.5527,2],["Rempah Warung Khas Batu","jawa",-7.8792,112.5227,2],
+["Aroem Restaurant (Semarang)","jawa",-7.0230,110.4209,2],["Silverspoon (Semarang)","western",-6.9712,110.4236,0],["Epicure (Semarang)","kafe",-7.0156,110.4269,2],["SKOLA Courtyard (Semarang)","western",-6.9655,110.4291,0],["Spiegel All Day (Semarang)","western",-6.9682,110.4285,0,1]];
+D=D.concat(D3);
+var CT=[["Tabanan",-8.5413,115.1236],["Denpasar",-8.6705,115.2126],["Ubud",-8.5069,115.2625],["Kuta",-8.7184,115.1686],["Singaraja",-8.1120,115.0882],["Negara (Jembrana)",-8.3580,114.6170],["Banyuwangi",-8.2192,114.3691],["Jember",-8.1845,113.6681],["Probolinggo",-7.7543,113.2159],["Surabaya",-7.2575,112.7521],["Malang",-7.9666,112.6326],["Kediri",-7.8480,112.0178],["Madiun",-7.6298,111.5239],["Solo",-7.5755,110.8243],["Yogyakarta",-7.7956,110.3695],["Semarang",-6.9667,110.4167],["Cirebon",-6.7320,108.5523],["Bandung",-6.9175,107.6191],["Bogor",-6.5950,106.8166],["Jakarta",-6.2088,106.8456],["Tangerang",-6.1783,106.6319],["Bekasi",-6.2383,106.9756]];
+["homeA","homeB"].forEach(function(id){var e=$(id),o=document.createElement("option");o.value="gps";o.textContent="📍 Lokasi GPS saya";e.appendChild(o);CT.forEach(function(c,i){var p=document.createElement("option");p.value=i;p.textContent=c[0];e.appendChild(p)});e.value="0";
+e.onchange=function(){hm(this.value)}});
+function hm(v){if(v=="gps"){gps();return}var c=CT[+v];L=[c[1],c[2]];LN=c[0];$("homeA").value=v;$("homeB").value=v;rn();rw()}
+function gps(){if(!navigator.geolocation){alert("Browser tidak mendukung lokasi. Pilih kota rumah Anda di daftar.");return}navigator.geolocation.getCurrentPosition(function(p){L=[p.coords.latitude,p.coords.longitude];LN="lokasi GPS Anda";$("homeA").value="gps";$("homeB").value="gps";rn();rw()},function(){alert("Lokasi tidak bisa diakses. Pilih kota rumah Anda di daftar.")})}
+$("geo").onclick=$("geo2").onclick=gps;
+rm();rp();
+</script>
+</body>
+</html>
